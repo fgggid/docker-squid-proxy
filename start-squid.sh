@@ -71,29 +71,27 @@ if [ ! -x $DAEMON ]; then echo "ERROR $DAEMON is not executable!"; exit 0; fi
 ulimit -n 65535
 
 find_cache_dir () {
-        w="	" # space tab
         res=`$DAEMON -k parse -f $CONFIG 2>&1 |
                 grep "Processing:" |
                 sed s/.*Processing:\ // |
-                sed -ne '
-                        s/^['"$w"']*'$1'['"$w"']\+[^'"$w"']\+['"$w"']\+\([^'"$w"']\+\).*$/\1/p;
+                sed -ne "
+                        s/^[ \t]*$1[ \t]\+[^ \t]\+[ \t]\+\([^ \t]\+\).*$/\1/p;
                         t end;
                         d;
-                        :end q'`
+                        :end q"`
         [ -n "$res" ] || res=$2
         echo "$res"
 }
 
 grepconf () {
-        w="	" # space tab
         res=`$DAEMON -k parse -f $CONFIG 2>&1 |
                 grep "Processing:" |
                 sed s/.*Processing:\ // |
-                sed -ne '
-                        s/^['"$w"']*'$1'['"$w"']\+\([^'"$w"']\+\).*$/\1/p;
+                sed -ne "
+                        s/^[ \t]*$1[ \t]\+\([^ \t]\+\).*$/\1/p;
                         t end;
                         d;
-                        :end q'`
+                        :end q"`
         [ -n "$res" ] || res=$2
         echo "$res"
 }
