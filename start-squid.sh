@@ -124,7 +124,7 @@ create_run_dir
 if test -d "$cache_dir" -a ! -d "$cache_dir/00"
 then
         log_warning_msg "Creating $DESC cache structure"
-        $DAEMON -z -f $CONFIG
+        $DAEMON -N -z -f $CONFIG
         [ -x /sbin/restorecon ] && restorecon -R $cache_dir
 fi
 
