@@ -4,12 +4,12 @@ RUN ln -sf /bin/bash /bin/sh
 
 #RUN echo 'deb http://deb.debian.org/debian bullseye-backports main' > /etc/apt/sources.list.d/backports.list
 #RUN echo 'deb-src http://deb.debian.org/debian bullseye-backports main' >> /etc/apt/sources.list.d/deb-sources.list
-RUN echo 'deb http://mirrors.163.com/debian bullseye main' > /etc/apt/sources.list && \
-    echo 'deb http://mirrors.163.com/debian bullseye-updates main' >> /etc/apt/sources.list && \
-    echo 'deb http://mirrors.163.com/debian/ bullseye-backports main non-free contrib' >> /etc/apt/sources.list && \
-    echo 'deb-src http://mirrors.163.com/debian/ bullseye main non-free contrib' >> /etc/apt/sources.list && \
-    echo 'deb-src http://mirrors.163.com/debian/ bullseye-updates main non-free contrib' >> /etc/apt/sources.list && \
-    echo 'deb-src http://mirrors.163.com/debian/ bullseye-backports main non-free contrib' >> /etc/apt/sources.list
+RUN echo 'deb http://mirrors.aliyun.com/debian bullseye main' > /etc/apt/sources.list && \
+    echo 'deb http://mirrors.aliyun.com/debian bullseye-updates main' >> /etc/apt/sources.list && \
+    echo 'deb http://mirrors.aliyun.com/debian/ bullseye-backports main non-free contrib' >> /etc/apt/sources.list && \
+    echo 'deb-src http://mirrors.aliyun.com/debian/ bullseye main non-free contrib' >> /etc/apt/sources.list && \
+    echo 'deb-src http://mirrors.aliyun.com/debian/ bullseye-updates main non-free contrib' >> /etc/apt/sources.list && \
+    echo 'deb-src http://mirrors.aliyun.com/debian/ bullseye-backports main non-free contrib' >> /etc/apt/sources.list
 
 RUN DEBIAN_FRONTEND=noninteractive && \
 	apt-get update && \
@@ -34,7 +34,7 @@ COPY squid_ssl.patch /tmp/squid_ssl.patch
 
 RUN DEBIAN_FRONTEND=noninteractive && \
 	apt-get update && \
-	nice -n19 apt-get install -y tzdata busybox openssl libssl-dev devscripts && \
+	nice -n19 apt-get install -y libc6=2.31-13+deb11u6 equivs tzdata busybox openssl libssl-dev devscripts --allow-downgrades && \
 	mkdir /xbin && /bin/busybox --install -s /xbin && \
 	echo "---------------------------------------------------------------------------------"&& \
 	test ! -d /usr/src/squid && mkdir -p -m0777 /usr/src/squid || true && \
@@ -45,7 +45,7 @@ RUN DEBIAN_FRONTEND=noninteractive && \
 	rm -f squid-build-deps* && \
 	echo "---------------------------------------------------------------------------------"&& \
 	nice -n19 apt-get source -y squid && \
-	mv /tmp/squid_ssl.patch . && \
+	mv /tmp/squid_ssl.patch . && cat squid_ssl.patch && \
 	cd squid-* && \
 	patch -p1 debian/rules < ../squid_ssl.patch && \
 	nice -n19 debuild -us -uc && \
